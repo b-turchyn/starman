@@ -62,7 +62,7 @@ cat <<DELIM
     ____) | || (_| | |  | | | | | | (_| | | | |
    |_____/ \__\__,_|_|  |_| |_| |_|\__,_|_| |_|
 
-     Starbound Dedicate Server  Auto-Installer
+     Starbound Dedicated Server Auto-Installer
 
 
 ================================================================================
@@ -71,18 +71,20 @@ cat <<DELIM
 
    System Architecture: $ARCH
    Username: $USER
-   SV Password: $SV_PASSWORD
-   RCON Password: $RCON_PASSWORD
-   Player Max: $MAX_PLAYERS
    Tmux Session Name: $SESS_NAME
    Extra Options: $EXTRA_OPTIONS
 ================================================================================
 
+  NOTE: Starbound requires Steam credentials to install the server; you will
+  have to input them shortly!
 
   You have 5 seconds to hit Ctrl-C if the above options don't look right!
 DELIM
 
 sleep 5
+
+read -p "Steam Username: " STEAM_USER
+read -s -p "Steam Password: " STEAM_PASS
 
 apt-get update
 
@@ -119,7 +121,7 @@ tar xfz "$HOMEDIR/steamcmd_linux.tar.gz" -C "$HOMEDIR"
 chmod +x "$HOMEDIR/steamcmd.sh"
 chown -R $USER:$USER $HOMEDIR
 chmod 700 $HOMEDIR
-su - -c "$HOMEDIR/steamcmd.sh +login anonymous +force_install_dir $HOMEDIR/starbound +app_update 211820 validate +quit" $USER
+su - -c "$HOMEDIR/steamcmd.sh +login $STEAM_USER $STEAM_PASS +force_install_dir $HOMEDIR/starbound +app_update 211820 validate +quit" $USER
 
 # Spin up the tmux session
 tmux new-session -A -d -s $SESS_NAME
